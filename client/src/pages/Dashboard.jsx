@@ -18,9 +18,7 @@ export default function Dashboard() {
       <div className=''>
         <DashSidebar/>
       </div>
-      <div>
         { tab === 'profile' &&  <Profile/>}
-      </div>
     </div>
   )
 }
