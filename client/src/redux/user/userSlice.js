@@ -36,7 +36,8 @@ export const userSlice = createSlice({
       state.loading = false;
     },
     deleteUserStart: (state) => {
-      state.loading= true
+      state.loading= true;
+      state.error= null;
     },
     deleteUserSuccess: (state,action)=>{
       state.currentUser = null;
