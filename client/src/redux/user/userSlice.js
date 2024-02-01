@@ -23,7 +23,8 @@ export const userSlice = createSlice({
       state.loading = false;
     },
     updateUserStart: (state) => {
-      state.loading= true
+      state.loading= true;
+      state.error= null;
     },
     updateUserSuccess: (state,action)=>{
       state.currentUser = action.payload;
