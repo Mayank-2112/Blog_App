@@ -13,6 +13,7 @@ export default function CreatePost() {
     const [imageFileUploadError, setImageFileUploadError] = useState(null);
     const [imageFileUploadProgress, setImageFileUploadProgress] = useState(null);
     const [publishError, setPublishError] = useState(null);
+    const [published, setPublished] = useState(false);
     const [formData, setFormData] = useState({});
     const handleUploadImage = async ()=>{
         try {
@@ -51,6 +52,7 @@ export default function CreatePost() {
     };
     const handleSubmitPost = async (e)=>{
         e.preventDefault();
+        setPublished(false);
         try {
             const res = await fetch('/api/post/create',{
                 method: 'POST',
@@ -62,6 +64,7 @@ export default function CreatePost() {
             const data = await res.json();
             if(res.ok){
                 setPublishError(null);
+                setPublished(true);
                 return;
             }
             else{
@@ -105,6 +108,7 @@ export default function CreatePost() {
             <ReactQuill theme='snow' className='h-72 mb-12' placeholder='Write Something...' required onChange={(value)=>{setFormData({...formData, content: value})}}/>
             <Button gradientDuoTone='purpleToPink' type='submit' >Publish</Button>
             {publishError && (<Alert className='mt-5' color='failure'>{publishError}</Alert>)}
+            {published && (<Alert className='mt-5' color='success'>Post Published Successsfully!!</Alert>)}
         </form>
     </div>
   )
