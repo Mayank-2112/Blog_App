@@ -1,7 +1,7 @@
 import { Alert, Button, Textarea } from 'flowbite-react';
 import React, { useEffect, useState } from 'react';
 import {useSelector} from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Comment from './Comment';
 
 export default function CommentSection({postId}) {
@@ -9,6 +9,8 @@ export default function CommentSection({postId}) {
     const [comment, setComment] = useState('');
     const [comments, setComments] = useState([]);
     const [commentError, setCommentError] = useState(null);
+    console.log(comments);
+    const navigate = useNavigate();
     const handleCommentSubmit = async (e)=>{
         e.preventDefault();
         if (comment.length > 200){
@@ -48,6 +50,31 @@ export default function CommentSection({postId}) {
         }
         getComments();
     },[postId]);
+
+    const handleLike = async (commentId)=>{
+        try {
+            if(!currentUser){
+                navigate('/sign-in');
+                return;
+            }
+            const res = await fetch(`/api/comment/likecomment/${commentId}`,{
+                method: 'POST',
+            });
+            if (res.ok){
+                const data = await res.json();
+                setComments(comments.map((comm)=>
+                    comm._id === commentId ? {
+                        ...comm,
+                        likes: data.likes,
+                        numberOfLikes: data.likes.length,
+                    } : comm
+                ))
+            }
+        } catch (error) {
+            console.log(error.message);
+        }
+    }
+
   return (
     <div className='max-w-2xl mx-auto my-5 w-full'>
         {currentUser ?
@@ -89,8 +116,8 @@ export default function CommentSection({postId}) {
                         <p>{comments.length}</p>
                     </div>
                 </div>
-                {comments.map(comment =>(
-                    <Comment key={comment._id} comment={comment}/>
+                {comments.map((comm) =>(
+                    <Comment key={comm._id} comm={comm} onLike={handleLike}/>
                 ))}
             </>
         )}
